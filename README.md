@@ -1,21 +1,26 @@
 #include <iostream>
-#include "headerfile.h"
-
-using namespace std ;
-
-int main(){
-
-wire w_a0;
-wire w_a1;
-
-decoder2to4 dec(" ");
-dec.connect_inputs(&w_a0,&w_a1);
-dec.evaluate();
-
-logicstate y3,y2,y1,y0;
-dec.get_outputs(y3,y2,y1,y0);
-
-
-return 0 ;
-
+using namespace std;
+double divide(int num, int denom);
+int main(void){
+int numerator;
+int denominator;
+double result;
+while(1){
+cout << "please enter a numerator and denominator: ";
+cin >> numerator;
+cin >> denominator;
+try{
+result = divide(numerator, denominator);
+cout << "the result is: " << result << endl;
+}
+catch(int exception_int){
+cout << exception_int << endl;
+}
+}
+cout << "end of program";
+}
+double divide(int num, int denom){
+if(denom == 0)
+throw 1;
+return (static_cast<double>(num) / denom);
 }
