@@ -13,9 +13,8 @@ try{
 result = divide(numerator, denominator);
 cout << "the result is: " << result << endl;
 }
-catch(const char * exception_string){
-cout << exception_string;
-}
+catch(int exception_int){
+cout << exception_int; }
 }
 }
 double divide(int num, int denom){
