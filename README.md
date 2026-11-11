@@ -144,13 +144,14 @@ public:
         }
         cout << "-----------------------------------------\n";
     }
-void enter_input_signal(bool A_s, bool B_s){
+void enter_input_signal(int A_s, int B_s){
     cout << "||--------------------------------------------------------||\n";
     cout << "||   A   ||   B   ||   Y3   ||   Y2   ||   Y1   ||   Y0   ||\n";
     cout << "||--------------------------------------------------------||\n";
-    setting(A_s, B_s);
+    setting(static_cast<bool>(A_s),static_cast<bool>(B_s));
     cout << "||   " << A_s << "   ||   " << B_s << "   ||   " << Y3 << "    ||   " << Y2 << "    ||   " << Y1 << "    ||   " << Y0 << "    ||\n";
     cout << "||--------------------------------------------------------||\n";
+
 }
 
 int  voltage_to_logic(double v) {
@@ -171,7 +172,7 @@ int B = voltage_to_logic(B_v);
 if(A== -1 || B == -1){
 enter_input_unknown();	
 return ;}
-cout << "||--------------------------------------------------------||\n";
+cout << "\n||--------------------------------------------------------||\n";
 cout << "||   A   ||   B   ||   Y3   ||   Y2   ||   Y1   ||   Y0   ||\n";
 cout << "||--------------------------------------------------------||\n";	
 setting(static_cast<bool>(A),static_cast<bool>(B));
@@ -180,7 +181,7 @@ cout << "||--------------------------------------------------------||\n";
 }
 
 void enter_input_unknown(){
-cout << "||--------------------------------------------------------||\n";
+cout << "\n||--------------------------------------------------------||\n";
 cout << "||   A   ||   B   ||   Y3   ||   Y2   ||   Y1   ||   Y0   ||\n";
 cout << "||--------------------------------------------------------||\n";	
 cout << "||   X   ||   X   ||   un   ||   un   ||   un   ||   un   ||\n";
@@ -195,15 +196,16 @@ cout << "\nCHON : ";
 cin >> select ;
 
 if(select == 0 ){
-bool a_s,b_s;
+int a_s,b_s;
 cout << "\nHAY NHAP GIA TRI A : ";
-cin >> a_s ;// ngoai le
+cin >> a_s ;
 cout << "\nHAY NHAP GIA TRI B : ";
 cin >> b_s;// ngoai le
-if(a_s == 0 || a_s == 1 || b_s ==0 || b_s == 1){
-enter_input_signal(a_s,b_s);	
+if((a_s == 0 || a_s == 1) && (b_s ==0 || b_s == 1)){
+enter_input_signal(a_s,b_s);
+
 }else{
-enter_input_unknown();	
+enter_input_unknown();
 }
 }
 
@@ -225,22 +227,20 @@ cout << "\nHAY NHAP GIA TRI A : ";
 cin >> a_v ;
 cout << "\nHAY NHAP GIA TRI B : ";
 cin >> b_v;
-enter_input_voltage(a_v,b_v);
-} else{
+ if( ((a_v <= V_IL && a_v >= -2) || (a_v >= V_IH && a_v <= 5)) && ((b_v <= V_IL && b_v >= -2) || (b_v >= V_IH && b_v <= 5))){
+enter_input_voltage(a_v,b_v);  
+}
+else{
+enter_input_unknown();    
+} }
+else{
 cout << "Nguong khong hop le!\n";
-enter_input_unknown();
 n = 0;	
 }
 }   
 }	
 }
-
-
-
-
 };
-
-
 int main(void) {
 decoder2to4 dec;
 dec.print_truth_table();
