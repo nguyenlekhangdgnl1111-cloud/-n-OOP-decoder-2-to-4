@@ -1,48 +1,59 @@
-`timescale 1ps/1ps
-module tb ;
-  reg clk ;
-  reg reset,preset;
-  reg j,k;
-  wire q,not_q ;
-  
-  ff_jk ff1(
-    .clk(clk),
-    .reset(reset),
-    .preset(preset),
-    .j(j),
-    .k(k),
-    .q(q),
-    .not_q(not_q)
-    );
+`timescale 1ns/1ps
+
+module tb;
+  reg  clk;
+  reg  reset;
+  reg  preset;
+  reg  j;
+  reg  k;
+  wire q;
+  wire not_q;
+
+  ff_jk ff1 (
+    .clk    (clk),
+    .reset  (reset),
+    .preset (preset),
+    .j      (j),
+    .k      (k),
+    .q      (q),
+    .not_q  (not_q)
+  );
+
+  // Clock tự động dao động chu kỳ 10ns
   initial begin
-   forever  #5 clk = ~clk ; 
+    clk = 1'b0;
+    forever #5 clk = ~clk;
   end
+
+  // Kịch bản kiểm thử các ngõ vào
   initial begin
-    $monitor("|| time = %d || CK = %b || j = %b || k = %b || q = %b || not_q = %b ||",$time,clk,j,k,q,not_q);
-     clk = 1'b0;
-     reset = 1'b0;
-     #5;
-  reset = 1'b1;
- #5;
- j = 1'b0 ; k = 1'b0 ; preset = 1'b0;
-  #5;
- j = 1'b0 ; k = 1'b0 ; preset = 1'b1;
+    $monitor("|| time = %0t || reset = %b || CK = %b || j = %b || k = %b || q = %b || not_q = %b ||",
+             $time, reset, clk, j, k, q, not_q);
 
-  #5;
- j = 1'b0 ; k = 1'b1 ; preset = 1'b0;
-  #5;
- j = 1'b0 ; k = 1'b1 ; preset = 1'b1;
+    // Khởi tạo giá trị đầu (giả định reset/preset tích cực mức thấp như FF_JK trước)
+    reset  = 1'b0;
+    preset = 1'b1;
+    j      = 1'b0;
+    k      = 1'b0;
+    #10;
 
-  #5;
- j = 1'b1 ; k = 1'b0 ; preset = 1'b0;
-  #5;
- j = 1'b1 ; k = 1'b0 ; preset = 1'b1;
+    // Nhả reset, kiểm tra chế độ giữ (J=0, K=0)
+    reset = 1'b1;
+    j = 1'b0; k = 1'b0;
+    #10;
 
-  #5;
- j = 1'b1 ; k = 1'b1 ; preset = 1'b0;
-  #5;
- j = 1'b1 ; k = 1'b1 ; preset = 1'b1;
-  #10;
-  $finish ;
+    // Kiểm tra xóa (J=0, K=1)
+    j = 1'b0; k = 1'b1;
+    #10;
+
+    // Kiểm tra thiết lập (J=1, K=0)
+    j = 1'b1; k = 1'b0;
+    #10;
+
+    // Kiểm tra đảo trạng thái / toggle (J=1, K=1)
+    j = 1'b1; k = 1'b1;
+    #20;
+
+    $finish;
   end
-endmodule   
+endmodule
