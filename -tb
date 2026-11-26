@@ -1,9 +1,12 @@
-`timescale 1ps/1ps
+`timescale 1ns/1ps
 module tb ;
   reg clk ;
-  reg reset,preset;
-  reg j,k;
-  wire q,not_q ;
+  reg reset;
+  reg preset;
+  reg j;
+  reg k;
+  logic q;
+  logic not_q;
   
   ff_jk ff1(
     .clk(clk),
@@ -18,13 +21,33 @@ module tb ;
    forever  #5 clk = ~clk ; 
   end
   initial begin
-    $monitor("|| time = %d || CK = %b || j = %b || k = %b || q = %b || not_q = %b ||",$time,clk,j,k,q,not_q);
-     reset = 1'b0;
-     #50;
-
-
+    $monitor("|| time = %d || reset = %b || CK = %b || j = %b || k = %b || q = %b || not_q = %b ||",$time,reset,clk,j,k,q,not_q);
+     clk = 0 ;
+    reset = 1'b0;
+   #5;
   reset = 1'b1;
- #50;
+   #5;
+   j = 0 ; k = 0 ; q = 0 ;
+   #5;
+   j = 0 ; k = 0 ; q = 1;
+   
+   #5;
+   j = 0 ; k = 1; q = 0 ;
+   #5;
+   j = 0 ; k = 1; q = 1;
+    
+   #5;
+   j = 1; k = 0 ; q = 0 ;
+   #5;
+   j = 1; k = 0 ; q = 1;
+    
+   #5;
+   j = 1; k = 1; q = 0 ;
+   #5;
+   j = 1; k = 1; q = 1;
+    
+
+    
   $finish ;
   end
 endmodule   
