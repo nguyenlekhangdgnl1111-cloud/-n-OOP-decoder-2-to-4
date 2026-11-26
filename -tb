@@ -1,0 +1,34 @@
+`timescale 1ps/1ps
+module tb;
+logic [3:0] reset ;
+logic  clk ;
+logic [3:0] preset;
+logic [3:0] q , not_q ;
+
+counter_ex uut (
+        .clk(clk),
+        .reset(reset),
+        .preset(preset),
+        .q(q),
+        .not_q(not_q)
+    );
+
+initial begin
+clk = 0 ;
+forever #5 clk = ~clk ;    
+end
+
+initial begin
+reset  = 4'b000; 
+preset = 4'b111; 
+$monitor("||time = %d || Q= %b ||Q= %d ",$time,q,q);
+
+#30;
+reset = 4'b111;
+
+
+
+#200;
+$finish ;
+end
+endmodule
