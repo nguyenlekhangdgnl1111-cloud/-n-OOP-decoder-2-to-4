@@ -3,17 +3,17 @@ input wire clk,
 input wire j,
 input wire k,
 input wire reset,
-input wire prset,
+input wire preset,
 output reg q,
 output reg not_q
 );
 
 always @(posedge clk ) begin
-if(reset) begin 
+  if(!reset) begin 
 q <= 1'b0; 
 not_q <= 1'b1;   
 end
-else if(preset) begin
+  else if(!preset) begin
 q <= 1'b1; 
 not_q <= 1'b0; 
 end
@@ -28,11 +28,11 @@ case ({j,k})
  q <= 1'b0; ; 
  not_q <= 1'b1 ;   
  end
-  2'b00: begin
+  2'b10: begin
  q <= 1'b1; ; 
  not_q <= 1'b0 ;   
  end
-  2'b00: begin
+  2'b11: begin
  q <= not_q ; 
  not_q <= q ;   
  end 
