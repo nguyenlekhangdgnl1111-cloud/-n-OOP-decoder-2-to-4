@@ -1,59 +1,40 @@
-`timescale 1ns/1ps
-
+`timescale 1ps/1ps
 module tb;
-  reg  clk;
-  reg  reset;
-  reg  preset;
-  reg  j;
-  reg  k;
-  wire q;
-  wire not_q;
+logic [3:0] reset ;
+logic  clk ;
+logic [3:0] preset;
+logic [3:0] q , not_q ;
 
-  ff_jk ff1 (
-    .clk    (clk),
-    .reset  (reset),
-    .preset (preset),
-    .j      (j),
-    .k      (k),
-    .q      (q),
-    .not_q  (not_q)
-  );
+counter_4bit uut (
+        .clk(clk),
+        .reset(reset),
+        .preset(preset),
+        .q(q),
+        .not_q(not_q)
+    );
 
-  // Clock tự động dao động chu kỳ 10ns
-  initial begin
-    clk = 1'b0;
-    forever #5 clk = ~clk;
-  end
+initial begin
+forever #5 clk = ~clk ;    
+end
 
-  // Kịch bản kiểm thử các ngõ vào
-  initial begin
-    $monitor("|| time = %0t || reset = %b || CK = %b || j = %b || k = %b || q = %b || not_q = %b ||",
-             $time, reset, clk, j, k, q, not_q);
+initial begin
+reset  = 4'b0000; 
+preset = 4'b1111;
+clk = 0 ; 
+  $monitor("||time = %d || Q= %b(%d) ||",$time,q,q);
 
-    // Khởi tạo giá trị đầu (giả định reset/preset tích cực mức thấp như FF_JK trước)
-    reset  = 1'b0;
-    preset = 1'b1;
-    j      = 1'b0;
-    k      = 1'b0;
-    #10;
+#5;
+reset = 4'b1111;
 
-    // Nhả reset, kiểm tra chế độ giữ (J=0, K=0)
-    reset = 1'b1;
-    j = 1'b0; k = 1'b0;
-    #10;
 
-    // Kiểm tra xóa (J=0, K=1)
-    j = 1'b0; k = 1'b1;
-    #10;
 
-    // Kiểm tra thiết lập (J=1, K=0)
-    j = 1'b1; k = 1'b0;
-    #10;
+#160;
+$finish;
+end
 
-    // Kiểm tra đảo trạng thái / toggle (J=1, K=1)
-    j = 1'b1; k = 1'b1;
-    #20;
+initial begin
+$dumpfile("dump.vcd");
+$dumpvars(0,tb);  
+end
 
-    $finish;
-  end
 endmodule
